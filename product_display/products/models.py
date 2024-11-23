@@ -23,3 +23,15 @@ class Client(models.Model):
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"
+
+
+
+class Conversation(models.Model):
+    user_id = models.CharField(max_length=255)  # Identifiant unique pour l'utilisateur
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class Message(models.Model):
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name="messages")
+    role = models.CharField(max_length=10, choices=[("user", "User"), ("bot", "Bot")])
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
