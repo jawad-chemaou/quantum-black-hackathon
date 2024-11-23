@@ -31,4 +31,56 @@ def log_button_view(request):
 
 
 def chatbot_view(request):
-    return render(request, 'chatbot.html')
+    return render(request, 'products/chatbot.html')
+
+
+import os
+from django.http import JsonResponse
+from mistralai import Mistral
+
+# Configurez votre modèle et clé API
+api_key = os.environ.get("MISTRAL_API_KEY")  # Ou remplacez par settings.MISTRAL_API_KEY
+model = "mistral-large-latest"
+client = Mistral(api_key=api_key)
+
+def mistral_chat(request):
+    if request.method == "POST":
+        # Récupérez le message utilisateur depuis la requête POST
+        user_message = request.POST.get("message", "")
+        print(f"Message reçu : {user_message}")  # Log dans le terminal
+        
+        if not user_message:
+            return JsonResponse({"error": "Message utilisateur manquant"}, status=400)
+
+        if "conversation" not in request.session:
+            request.session["conversation"] = []
+
+        conversation = request.session["conversation"]
+        conversation.append({"role": "user", "content": user_message})
+
+        conversation_string = "\n".join([f"{msg['role']}: {msg['content']}" for msg in conversation])
+        # Effectuer une requête à l'API Mistral
+        try:
+            chat_response = client.chat.complete(
+                model=model,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": conversation_string,
+                    },
+                ],
+            )
+            # Extraire la réponse du bot
+            bot_response = chat_response.choices[0].message.content
+            conversation.append({"role": "bot", "content": bot_response})
+            request.session["conversation"] = conversation
+            request.session.modified = True
+            return JsonResponse({"response": bot_response})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": "Méthode non autorisée"}, status=405)
+
+
+
+
