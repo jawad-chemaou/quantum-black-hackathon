@@ -96,40 +96,79 @@
     </div>
 
     <script>
-        // Fonctionnalité du chatbot
+        // Fonction pour récupérer le jeton CSRF depuis les cookies
+function getCSRFToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') {
+            return value;
+        }
+    }
+    return null;
+}
+
         document.addEventListener('DOMContentLoaded', function () {
-            const chatbotMessages = document.getElementById('chatbot-messages');
-            const chatbotInput = document.getElementById('chatbot-input');
-            const chatbotSend = document.getElementById('chatbot-send');
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const chatbotInput = document.getElementById('chatbot-input');
+    const chatbotSend = document.getElementById('chatbot-send');
 
-            function addMessage(message, isBot = false) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('chatbot-message');
-                messageDiv.classList.add(isBot ? 'bot-message' : 'user-message');
-                messageDiv.textContent = message;
-                chatbotMessages.appendChild(messageDiv);
-                chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll automatique
-            }
+    function addMessage(message, isBot = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('chatbot-message');
+        messageDiv.classList.add(isBot ? 'bot-message' : 'user-message');
+        messageDiv.textContent = message;
+        chatbotMessages.appendChild(messageDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll automatique
+    }
 
-            chatbotSend.addEventListener('click', function () {
-                const userMessage = chatbotInput.value.trim();
-                if (userMessage) {
-                    addMessage(userMessage, false); // Ajouter le message de l'utilisateur
-                    chatbotInput.value = ''; // Réinitialiser le champ
-
-                    // Simuler une réponse automatique du bot
-                    setTimeout(() => {
-                        addMessage("Je suis là pour vous aider !", true);
-                    }, 1000);
-                }
-            });
-
-            chatbotInput.addEventListener('keydown', function (event) {
-                if (event.key === 'Enter') {
-                    chatbotSend.click(); // Simuler un clic sur le bouton "Envoyer"
-                }
-            });
+    async function sendMessageToMistral(message) {
+    const csrfToken = getCSRFToken(); // Récupérer le CSRF token
+    try {
+        const response = await fetch('/mistral-chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken, // Inclure le CSRF token dans les en-têtes
+            },
+            body: new URLSearchParams({
+                message: message,
+            }),
         });
+
+        if (!response.ok) {
+            throw new Error(`Erreur serveur : ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.error) {
+            addMessage("Erreur : " + data.error, true);
+        } else {
+            addMessage(data.response, true); // Affiche la réponse du bot
+        }
+    } catch (error) {
+        console.error("Erreur dans sendMessageToMistral :", error);
+        addMessage("Erreur de connexion au serveur.", true);
+    }
+}
+
+
+    chatbotSend.addEventListener('click', function () {
+        const userMessage = chatbotInput.value.trim();
+        if (userMessage) {
+            addMessage(userMessage, false); // Ajout du message utilisateur
+            chatbotInput.value = ''; // Réinitialiser le champ
+            sendMessageToMistral(userMessage); // Envoyer à l'API Mistral
+        }
+    });
+
+    chatbotInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            chatbotSend.click(); // Simuler un clic sur le bouton "Envoyer"
+        }
+    });
+});
+
     </script>
 </body>
 </html>
