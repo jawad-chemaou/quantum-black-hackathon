@@ -8,10 +8,11 @@ data = pd.read_csv(file_path)
 
 
 # Ajouter une colonne de stock avec des valeurs aléatoires entre 0 et 500
-data['stock'] = [max(random.normalvariate(100, 10),0) for _ in range(len(data))]
+data['stock'] = [int(max(random.normalvariate(100, 10),0)) for _ in range(len(data))]
 
 # Sauvegarder le fichier avec la colonne stock ajoutée
-output_file_path = "fichier_avec_stock.csv"
-data.to_csv(output_file_path, index=False)
+data.to_csv(file_path, index=False)
 
-print(f"Le fichier avec les stocks a été enregistré sous : {output_file_path}")
+print(f"Le fichier avec les stocks a été enregistré sous : {file_path}")
+
+
