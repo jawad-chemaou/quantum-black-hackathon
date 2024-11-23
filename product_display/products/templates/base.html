@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mon Super Site{% endblock %}</title>
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Bandeau */
+        .navbar {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .site-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            background-color: #0056b3;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar .nav-link:hover {
+            background-color: #003f7f;
+        }
+
+        /* Contenu principal */
+        .main-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Bandeau -->
+    <div class="navbar">
+        <div class="site-name">Mon Super Site</div>
+        <a href="/inscription/" class="nav-link">Inscription</a>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

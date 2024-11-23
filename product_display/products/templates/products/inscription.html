@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - Mon Super Site{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center; color: #333;">Inscription</h2>
+<form method="post" style="display: flex; flex-direction: column; gap: 15px;">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+        <div>
+            <label for="{{ field.id_for_label }}" style="font-weight: bold; margin-bottom: 5px; display: block;">
+                {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+                <div style="color: red; font-size: 12px; margin-top: 5px;">
+                    {{ field.errors|join:", " }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit" style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
+        S'inscrire
+    </button>
+</form>
+{% endblock %}

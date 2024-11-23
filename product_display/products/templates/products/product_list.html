@@ -1,52 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Produits</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            padding: 16px;
-        }
-        .product-card {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 16px;
-            max-width: 300px;
-        }
-        img {
-            width: 100%;
-            border-radius: 8px;
-        }
-        a {
-            text-decoration: none;
-            color: white;
-            background-color: #007BFF;
-            padding: 8px 16px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-top: 8px;
-        }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Produits - Mon Super Site{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center; color: #333;">Nos Produits</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px;">
     {% for product in products %}
-    <div class="product-card">
-        <img src="{{ product.image_url }}" alt="{{ product.name }}">
-        <h3>{{ product.name }}</h3>
-        <p>
-            <strong>Prix :</strong> {{ product.discounted_price }} 
-            <del>{{ product.actual_price }}</del>
-        </p>
+    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; width: 300px; background-color: #f9f9f9;">
+        <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 5px;">
+        <h3 style="margin: 10px 0;">{{ product.name }}</h3>
+        <p><strong>Prix :</strong> {{ product.discounted_price }} <del>{{ product.actual_price }}</del></p>
         <p>{{ product.description }}</p>
-        <a href="{{ product.product_url }}" target="_blank">Voir sur Amazon</a>
+        <a href="{{ product.product_url }}" target="_blank" style="display: inline-block; text-decoration: none; background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; margin-top: 10px;">Acheter</a>
     </div>
     {% endfor %}
-</body>
-</html>
+</div>
+
+<!-- Chatbot -->
+<div id="chatbot-container">
+    <div id="chatbot-header">Chatbot</div>
+    <div id="chatbot-body">
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Posez une question...">
+        <button id="chatbot-send">Envoyer</button>
+    </div>
+</div>
+{% endblock %}
+
+<!-- Ajouter les styles et scripts du chatbot -->
+<style>
+    /* Styles pour le chatbot */
+    #chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px; /* Fixé à droite */
+        width: 300px;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+    }
+
+    #chatbot-header {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    #chatbot-body {
+        display: flex;
+        flex-direction: column;
+        height: 300px;
+    }
+
+    #chatbot-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+    }
+
+    #chatbot-input {
+        width: calc(100% - 80px);
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 0 0 0 10px;
+        outline: none;
+    }
+
+    #chatbot-send {
+        width: 80px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 0 0 10px 0;
+    }
+
+    #chatbot-send:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const chatbotInput = document.getElementById('chatbot-input');
+    const chatbotSend = document.getElementById('chatbot-send');
+
+    function addMessage(message, isBot = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.textContent = message;
+        msgDiv.style.margin = '10px 0';
+        msgDiv.style.padding = '10px';
+        msgDiv.style.borderRadius = '8px';
+        msgDiv.style.backgroundColor = isBot ? '#e9ecef' : '#007bff';
+        msgDiv.style.color = isBot ? '#333' : 'white';
+        msgDiv.style.textAlign = isBot ? 'left' : 'right';
+        chatbotMessages.appendChild(msgDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    // Gérer le clic sur le bouton "Envoyer"
+    chatbotSend.addEventListener('click', function () {
+        console.log('Bouton Envoyer cliqué'); // Affiche un log dans la console
+        const userMessage = chatbotInput.value.trim();
+        if (userMessage) {
+            console.log('Message utilisateur :', userMessage); // Log du message saisi par l'utilisateur
+            addMessage(userMessage, false); // Ajout du message utilisateur
+            chatbotInput.value = ''; // Réinitialiser le champ de saisie
+
+            // Simuler une réponse automatique du bot
+            setTimeout(() => {
+                addMessage("Je suis là pour vous aider ! Posez-moi vos questions.", true);
+            }, 1000);
+        }
+    });
+});
+
+
+     
+</script>

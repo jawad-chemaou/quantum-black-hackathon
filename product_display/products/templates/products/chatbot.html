@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        /* Styles pour le chatbot */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #chatbot-container {
+            width: 400px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #chatbot-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #chatbot-messages {
+            flex: 1;
+            padding: 10px;
+            background-color: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .chatbot-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+        }
+
+        .bot-message {
+            background-color: #e9ecef;
+            color: #333;
+            text-align: left;
+        }
+
+        #chatbot-input-container {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        #chatbot-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+
+        #chatbot-send {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #chatbot-send:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatbot-container">
+        <div id="chatbot-header">Chatbot</div>
+        <div id="chatbot-messages"></div>
+        <div id="chatbot-input-container">
+            <input type="text" id="chatbot-input" placeholder="Tapez votre message...">
+            <button id="chatbot-send">Envoyer</button>
+        </div>
+    </div>
+
+    <script>
+        // Fonctionnalité du chatbot
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatbotMessages = document.getElementById('chatbot-messages');
+            const chatbotInput = document.getElementById('chatbot-input');
+            const chatbotSend = document.getElementById('chatbot-send');
+
+            function addMessage(message, isBot = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chatbot-message');
+                messageDiv.classList.add(isBot ? 'bot-message' : 'user-message');
+                messageDiv.textContent = message;
+                chatbotMessages.appendChild(messageDiv);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll automatique
+            }
+
+            chatbotSend.addEventListener('click', function () {
+                const userMessage = chatbotInput.value.trim();
+                if (userMessage) {
+                    addMessage(userMessage, false); // Ajouter le message de l'utilisateur
+                    chatbotInput.value = ''; // Réinitialiser le champ
+
+                    // Simuler une réponse automatique du bot
+                    setTimeout(() => {
+                        addMessage("Je suis là pour vous aider !", true);
+                    }, 1000);
+                }
+            });
+
+            chatbotInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    chatbotSend.click(); // Simuler un clic sur le bouton "Envoyer"
+                }
+            });
+        });
+    </script>
+</body>
+</html>

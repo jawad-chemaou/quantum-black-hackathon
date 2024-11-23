@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Button Example</title>
+</head>
+<body>
+    <h1>Test du bouton</h1>
+    <button id="log-button">Cliquez-moi</button>
+
+    <script>
+        // JavaScript pour le bouton
+        document.addEventListener('DOMContentLoaded', function () {
+            const logButton = document.getElementById('log-button');
+
+            // Attacher un événement au clic du bouton
+            logButton.addEventListener('click', function () {
+                console.log('Bouton cliqué !'); // Afficher un log dans la console
+            });
+        });
+    </script>
+</body>
+</html>
