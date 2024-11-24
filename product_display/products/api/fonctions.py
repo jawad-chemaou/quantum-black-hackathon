@@ -17,7 +17,7 @@ api_key = os.environ["MISTRAL_API_KEY"]
 client = Mistral(api_key=api_key)
 
 # Charger les embeddings et les métadonnées
-data = pd.read_csv('C://Users//artem//OneDrive//Documents//Elias//X3//hackathon//quantum-black-hackathon//chat_bot_mvp//text_embeddings.csv')  # Assumez que le fichier contient 'product_id', 'embedding'
+data = pd.read_csv('./chat_bot_mvp/text_embeddings.csv')  # Assumez que le fichier contient 'product_id', 'embedding'
 # Si les embeddings sont des chaînes de nombres séparés par des espaces
 embeddings = np.array(
     data['embedding']
