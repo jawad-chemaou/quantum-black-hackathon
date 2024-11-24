@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Product
 from django.shortcuts import render, redirect
 from .forms import ClientForm
+from products.api.fonctions import *
 
 def product_list(request):
     products = Product.objects.all()[0:10]
@@ -52,24 +53,44 @@ def mistral_chat(request):
         if not user_message:
             return JsonResponse({"error": "Message utilisateur manquant"}, status=400)
 
+        chunks = generate_chunks(user_message)
+
+        for chunk in chunks:
+            print(chunk)
+            print("_____________________")
+
+
         if "conversation" not in request.session:
             request.session["conversation"] = []
 
         conversation = request.session["conversation"]
         conversation.append({"role": "user", "content": user_message})
 
-        conversation_string = "\n".join([f"{msg['role']}: {msg['content']}" for msg in conversation])
+        discussion = "\n".join([f"{msg['role']}: {msg['content']}" for msg in conversation])
         # Effectuer une requête à l'API Mistral
+        prompt = f"""Context information is below.
+                ---------------------
+                {[preprocess_text(chunk[0][0]) for chunk in chunks]}
+                ---------------------
+                Prior discussion is below.
+                ---------------------
+                {discussion}
+                ---------------------
+                Given the context information and the prior discussion, answer the query.
+                Query: {user_message}
+                Answer:"""
         try:
-            chat_response = client.chat.complete(
-                model=model,
+            print("J'essaie de répondre....")
+            chat_response = client.agents.complete(
+                agent_id="ag:68495cb5:20241123:egsj:6803ad09",
                 messages=[
                     {
                         "role": "user",
-                        "content": conversation_string,
+                        "content": prompt,
                     },
                 ],
             )
+            print(chat_response.choices[0].message.content)
             # Extraire la réponse du bot
             bot_response = chat_response.choices[0].message.content
             conversation.append({"role": "bot", "content": bot_response})

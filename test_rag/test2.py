@@ -9,7 +9,7 @@ import pandas as pd
 
 
 api_key = os.environ["MISTRAL_API_KEY"]
-model = "mistral-small"
+
 
 client = Mistral(api_key=api_key)
 
