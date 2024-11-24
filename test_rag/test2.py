@@ -1,7 +1,5 @@
 from mistralai import Mistral
-import requests
 import numpy as np
-import faiss
 import os
 from getpass import getpass
 import time
