@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 from sentence_transformers import SentenceTransformer
 import os
 
-api_key = os.environ["MISTRAL_API_KEY"]
+api_key = os.getenv("MISTRAL_API_KEY")
 
 
 client = Mistral(api_key=api_key)
